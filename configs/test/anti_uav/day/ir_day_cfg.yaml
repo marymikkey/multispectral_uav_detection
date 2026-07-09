@@ -1,0 +1,86 @@
+path: /mnt/datasets/IR_DATA/ANTI-UAV/ANTI-UAV_synced_lite_by_scene/test
+
+train: 20190925_111757_1_1/infrared/images
+val: 20190925_111757_1_1/infrared/images
+
+test:
+  - 20190925_111757_1_1/infrared/images
+  - 20190925_111757_1_2/infrared/images
+  - 20190925_111757_1_3/infrared/images
+  - 20190925_111757_1_4/infrared/images
+  - 20190925_111757_1_5/infrared/images
+  - 20190925_111757_1_6/infrared/images
+  - 20190925_111757_1_7/infrared/images
+  - 20190925_111757_1_8/infrared/images
+  - 20190925_111757_1_9/infrared/images
+  - 20190925_111757_1_10/infrared/images
+
+  - 20190925_124000_1_1/infrared/images
+  - 20190925_124000_1_2/infrared/images
+  - 20190925_124000_1_3/infrared/images
+  - 20190925_124000_1_4/infrared/images
+  - 20190925_124000_1_5/infrared/images
+  - 20190925_124000_1_6/infrared/images
+  - 20190925_124000_1_7/infrared/images
+  - 20190925_124000_1_8/infrared/images
+  - 20190925_124000_1_9/infrared/images
+  - 20190925_124000_1_10/infrared/images
+
+  - 20190925_124612_1_1/infrared/images
+  - 20190925_124612_1_2/infrared/images
+  - 20190925_124612_1_3/infrared/images
+  - 20190925_124612_1_4/infrared/images
+  - 20190925_124612_1_5/infrared/images
+  - 20190925_124612_1_6/infrared/images
+  - 20190925_124612_1_7/infrared/images
+  - 20190925_124612_1_8/infrared/images
+
+  - 20190925_134301_1_1/infrared/images
+  - 20190925_134301_1_2/infrared/images
+  - 20190925_134301_1_3/infrared/images
+  - 20190925_134301_1_4/infrared/images
+  - 20190925_134301_1_5/infrared/images
+  - 20190925_134301_1_6/infrared/images
+  - 20190925_134301_1_7/infrared/images
+  - 20190925_134301_1_8/infrared/images
+  - 20190925_134301_1_9/infrared/images
+
+  - 20190926_095902_1_1/infrared/images
+  - 20190926_095902_1_3/infrared/images
+  - 20190926_095902_1_4/infrared/images
+  - 20190926_095902_1_5/infrared/images
+  - 20190926_095902_1_8/infrared/images
+
+  - 20190926_102042_1_1/infrared/images
+  - 20190926_102042_1_2/infrared/images
+  - 20190926_102042_1_3/infrared/images
+  - 20190926_102042_1_4/infrared/images
+  - 20190926_102042_1_5/infrared/images
+  - 20190926_102042_1_6/infrared/images
+  - 20190926_102042_1_7/infrared/images
+  - 20190926_102042_1_8/infrared/images
+  - 20190926_102042_1_9/infrared/images
+
+  - 20190926_111509_1_1/infrared/images
+  - 20190926_111509_1_2/infrared/images
+  - 20190926_111509_1_3/infrared/images
+  - 20190926_111509_1_4/infrared/images
+  - 20190926_111509_1_5/infrared/images
+  - 20190926_111509_1_6/infrared/images
+  - 20190926_111509_1_7/infrared/images
+  - 20190926_111509_1_8/infrared/images
+  - 20190926_111509_1_9/infrared/images
+
+  - 20190926_134054_1_1/infrared/images
+  - 20190926_134054_1_2/infrared/images
+  - 20190926_134054_1_3/infrared/images
+  - 20190926_134054_1_4/infrared/images
+  - 20190926_134054_1_5/infrared/images
+  - 20190926_134054_1_6/infrared/images
+  - 20190926_134054_1_7/infrared/images
+  - 20190926_134054_1_8/infrared/images
+  - 20190926_134054_1_9/infrared/images
+
+nc: 1
+names:
+  0: drone

@@ -1,0 +1,14 @@
+path: /mnt/datasets/IR_DATA/ANTI-UAV/ANTI-UAV_synced_lite
+
+train: train/visible/images
+val: val/visible/images
+test: test/visible/images
+
+nc: 1
+names:
+  0: drone
+
+ch: 4
+pairs_rgb_ir:
+  - visible
+  - infrared

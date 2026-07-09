@@ -1,0 +1,9 @@
+path: /mnt/datasets/IR_DATA/ANTI-UAV/ANTI-UAV_synced_lite
+
+train: train/infrared/images
+val: val/infrared/images
+test: test/infrared/images
+
+nc: 1
+names:
+  0: drone
