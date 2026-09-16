@@ -1,0 +1,23 @@
+train:
+
+  #anti-uav
+  - /mnt/datasets/IR_DATA/ANTI-UAV/ANTI-UAV_unused_after_sync/train/infrared/images
+  - /mnt/datasets/IR_DATA/ANTI-UAV/ANTI-UAV_unused_after_sync/test/infrared/images
+
+  # Drones 
+  - /mnt/datasets/IR_DATA/Drones.v1i.gray1/train/images
+
+
+  # Halmstadt 
+  - /mnt/datasets/IR_DATA/Halmstadt_data/split_drones_gray1/train/images
+
+val:
+  - /mnt/datasets/IR_DATA/ANTI-UAV/ANTI-UAV_unused_after_sync/val/infrared/images
+  - /mnt/datasets/IR_DATA/Drones.v1i.gray1/valid/images
+  - /mnt/datasets/IR_DATA/Halmstadt_data/split_drones_gray1/val/images
+
+test:
+  - /mnt/datasets/IR_DATA/ANTI-UAV/ANTI-UAV_unused_after_sync/val/infrared/images
+
+
+nc: 3
