@@ -1,0 +1,93 @@
+train:
+
+#anti-uav
+  - /mnt/datasets/IR_DATA/ANTI-UAV/ANTI-UAV_unused_after_sync/train/visible/images
+  - /mnt/datasets/IR_DATA/ANTI-UAV/ANTI-UAV_unused_after_sync/test/visible/images
+
+#droneDetectionPaper
+  - /mnt/datasets/VISUAL_DATA/droneDetectionPaper/train
+#  - /mnt/datasets/VISUAL_DATA/droneDetectionPaper/train_background
+  - /mnt/datasets/VISUAL_DATA/droneDetectionPaper/train_small
+
+#  - /mnt/datasets/VISUAL_DATA/droneDetectionPaper/val
+#  - /mnt/datasets/VISUAL_DATA/droneDetectionPaper/val_background
+#  - /mnt/datasets/VISUAL_DATA/droneDetectionPaper/val_small
+
+#DUT-Anti-UAV
+  - /mnt/datasets/VISUAL_DATA/DUT-Anti-UAV/train
+#  - /mnt/datasets/VISUAL_DATA/DUT-Anti-UAV/train_background
+  - /mnt/datasets/VISUAL_DATA/DUT-Anti-UAV/train_small
+  - /mnt/datasets/VISUAL_DATA/DUT-Anti-UAV/tracking_data/train
+
+#  - /mnt/datasets/VISUAL_DATA/DUT-Anti-UAV/val
+#  - /mnt/datasets/VISUAL_DATA/DUT-Anti-UAV/val_background
+#  - /mnt/datasets/VISUAL_DATA/DUT-Anti-UAV/val_small
+#  - /mnt/datasets/VISUAL_DATA/DUT-Anti-UAV/tracking_data/val
+
+  - /mnt/datasets/VISUAL_DATA/DUT-Anti-UAV/test
+
+#Halmstadt
+  - /mnt/datasets/VISUAL_DATA/Halmstadt_data/V_converted
+  - /mnt/datasets/VISUAL_DATA/Halmstadt_data/V_converted_small
+
+#RISL
+  - /mnt/datasets/VISUAL_DATA/RISL/train
+#  - /mnt/datasets/VISUAL_DATA/RISL/train_background
+  - /mnt/datasets/VISUAL_DATA/RISL/train_small
+
+  - /mnt/datasets/VISUAL_DATA/RISL/valid
+#  - /mnt/datasets/VISUAL_DATA/RISL/valid_background
+  - /mnt/datasets/VISUAL_DATA/RISL/valid_small
+
+#UAV-Eagle
+  - /mnt/datasets/VISUAL_DATA/UAV-Eagle
+  - /mnt/datasets/VISUAL_DATA/UAV-Eagle_small
+
+#usc_mcl
+  - /mnt/datasets/VISUAL_DATA/usc_mcl/yolo_dataset/Drone_frames
+  - /mnt/datasets/VISUAL_DATA/usc_mcl/yolo_dataset/Drone_frames_1
+  - /mnt/datasets/VISUAL_DATA/usc_mcl/yolo_dataset/Drone_garden
+  - /mnt/datasets/VISUAL_DATA/usc_mcl/yolo_dataset/Drone_garden1
+  - /mnt/datasets/VISUAL_DATA/usc_mcl/yolo_dataset/Drone_garden2
+  - /mnt/datasets/VISUAL_DATA/usc_mcl/yolo_dataset/Drone8
+  - /mnt/datasets/VISUAL_DATA/usc_mcl/yolo_dataset/Drone9
+  - /mnt/datasets/VISUAL_DATA/usc_mcl/yolo_dataset/Drone_test
+  - /mnt/datasets/VISUAL_DATA/usc_mcl/yolo_dataset/Drone_test1
+
+  - /mnt/datasets/VISUAL_DATA/Drone_Train_and_Test_set/Drone_TrainSet_yolo_filt
+  - /mnt/datasets/VISUAL_DATA/Drone_Train_and_Test_set/Drone_TrainSet_yolo_filt_medium_small
+  - /mnt/datasets/VISUAL_DATA/Drone_Train_and_Test_set/Drone_TrainSet_yolo_filt_small
+  
+  - /mnt/datasets/VISUAL_DATA/S_UAV_T_filtered/split/train
+#  - /mnt/datasets/VISUAL_DATA/S_UAV_T_filtered/split/val
+
+#  - /mnt/datasets/VISUAL_DATA/background_forest_val_small
+
+  - /mnt/datasets/VISUAL_DATA/Finetune_data_10_09/train_no_background
+#  - /mnt/datasets/VISUAL_DATA/Finetune_data_10_09/val
+
+  - /mnt/datasets/VISUAL_DATA/S_UAV_T_filtered/split/test
+
+#  - /mnt/datasets/VISUAL_DATA/sk_background/background_starviz
+#  - /mnt/datasets/VISUAL_DATA/sk_background/bcg
+
+
+val:
+  - /mnt/datasets/IR_DATA/ANTI-UAV/ANTI-UAV_unused_after_sync/val/visible/images
+
+  - /mnt/datasets/VISUAL_DATA/droneDetectionPaper/val
+  - /mnt/datasets/VISUAL_DATA/droneDetectionPaper/val_background
+
+  - /mnt/datasets/VISUAL_DATA/DUT-Anti-UAV/val
+  - /mnt/datasets/VISUAL_DATA/DUT-Anti-UAV/val_background
+  - /mnt/datasets/VISUAL_DATA/DUT-Anti-UAV/tracking_data/val
+  - /mnt/datasets/VISUAL_DATA/DUT-Anti-UAV/val_small
+
+  - /mnt/datasets/VISUAL_DATA/S_UAV_T_filtered/split/val
+  - /mnt/datasets/VISUAL_DATA/Finetune_data_10_09/val
+
+test:
+  - /mnt/datasets/IR_DATA/ANTI-UAV/ANTI-UAV_unused_after_sync/val/visible/images
+
+
+nc: 3
