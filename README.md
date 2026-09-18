@@ -15,7 +15,12 @@ training scripts at it:
 
 ```bash
 git clone https://github.com/wandahangFY/YOLOv11-RGBT.git /home/YOLOv11-RGBT
+pip install -r /home/YOLOv11-RGBT/requirements.txt
+pip install -r requirements.txt  # this repo's own scripts (see requirements.txt)
 ```
+
+`torch`/`torchvision` aren't pinned in either requirements file -- install the build
+matching your CUDA version from https://pytorch.org/get-started/locally/ first.
 
 Every training script sets `REPO_ROOT = Path("/home/YOLOv11-RGBT")` before importing
 `ultralytics`, and checks that the imported `ultralytics.__file__` actually resolves
