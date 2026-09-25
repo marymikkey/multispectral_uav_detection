@@ -1,6 +1,12 @@
 # multispectral_detection
 Multispectral (RGB + IR) UAV detection with YOLOv11 mid-fusion.
 
+## Data sources
+
+See [DATA_SOURCES.md](DATA_SOURCES.md) for links to every dataset used,
+grouped by what it's used for (main Anti-UAV benchmark, RGB-only pretrain
+candidates, IR-only pretrain candidates, other multispectral sets surveyed but not used).
+
 ## External dependencies
 
 Training relies on a custom fork of Ultralytics/YOLO that adds RGB / IR (grayscale) /
