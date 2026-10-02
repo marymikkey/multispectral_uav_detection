@@ -21,15 +21,17 @@ from pathlib import Path
 import cv2
 import numpy as np
 
-DATA_ROOT = Path("/mnt/datasets/Maria_preprocess/mine_dpl/data_14may_selected_synced_warped_labeled_full")
+from scripts.paths import POLYGON_DATA_ROOT, DIPLOMA_ROOT
 
-BASE_IMG = Path(
-    "/mnt/datasets/Maria_preprocess/mine_dpl/data_14may_selected_synced_warped_labeled_full/"
-    "2026-05-14_16-49-25_02616_03299/visible/images/"
+DATA_ROOT = POLYGON_DATA_ROOT / "data_14may_selected_synced_warped_labeled_full"
+
+BASE_IMG = (
+    DATA_ROOT
+    / "2026-05-14_16-49-25_02616_03299/visible/images/"
     "2026-05-14_16-49-25_right003066_left003066.jpg"
 )
 
-OUT_DIR = Path("/home/src/diploma/anti_uav/polygon_prep/debugs")
+OUT_DIR = DIPLOMA_ROOT / "anti_uav" / "polygon_prep" / "debugs"
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 
 OUT_IMG = OUT_DIR / "all_dataset_boxes_by_interval_with_ir_fov_and_crop_1248.jpg"

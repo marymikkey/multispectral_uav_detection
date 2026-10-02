@@ -25,8 +25,10 @@ import traceback
 from pathlib import Path
 from datetime import datetime
 
+from scripts.paths import YOLO_REPO_ROOT, DIPLOMA_ROOT
+
 # ---------- REPO SETUP ----------
-REPO_ROOT = Path("/home/YOLOv11-RGBT")
+REPO_ROOT = YOLO_REPO_ROOT
 EXPECTED_ULTRA_INIT = REPO_ROOT / "ultralytics" / "__init__.py"
 
 if "/ultralytics" in sys.path:
@@ -53,13 +55,13 @@ from scripts.training.shared.summary import save_run_markdown
 # =========================================================
 
 DATA_YAML = Path("configs/train/from_scratch/anti_uav/rgbt_cfg.yaml")
-PROJECT_DIR = Path("/home/src/diploma/train/runs/antiuav_resync")
+PROJECT_DIR = DIPLOMA_ROOT / "train" / "runs" / "antiuav_resync"
 
 RUN_NAME = "yolo11s_rgbt_midfusion_p3_rgb_ir_pretrained_rgb_neck_head_freeze_backbones"
-INIT_PT = Path(
-    "/home/src/diploma/train/runs/antiuav_resync/"
-    "rgbt_init_from_rgb_ir_pretrain/"
-    "yolo11s_rgbt_midfusion_p3_rgb_ir_backbones_rgb_neck_head_init.pt"
+INIT_PT = (
+    DIPLOMA_ROOT / "train" / "runs" / "antiuav_resync"
+    / "rgbt_init_from_rgb_ir_pretrain"
+    / "yolo11s_rgbt_midfusion_p3_rgb_ir_backbones_rgb_neck_head_init.pt"
 )
 
 DEVICE = 0

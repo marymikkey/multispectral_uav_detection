@@ -19,14 +19,16 @@ import cv2
 import numpy as np
 from tqdm import tqdm
 
+from scripts.paths import ANTIUAV_DATA_ROOT
+
 
 # =========================================================
-# CONFIGURATION 
+# CONFIGURATION
 # =========================================================
 
 # Paths
-ROOT = Path("/mnt/datasets/IR_DATA/ANTI-UAV/ANTI-UAV_each_frame")
-OUT_ROOT = Path("/mnt/datasets/IR_DATA/ANTI-UAV/ANTI-UAV_synced_lite")
+ROOT = ANTIUAV_DATA_ROOT / "ANTI-UAV_each_frame"
+OUT_ROOT = ANTIUAV_DATA_ROOT / "ANTI-UAV_synced_lite"
 
 # Which splits to process
 SPLITS = ["val"]  # or ["train"], ["test"], etc.

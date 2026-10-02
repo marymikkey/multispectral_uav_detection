@@ -20,8 +20,10 @@ import traceback
 from pathlib import Path
 from datetime import datetime
 
+from scripts.paths import YOLO_REPO_ROOT, DIPLOMA_ROOT
+
 # ---------- REPO SETUP ----------
-REPO_ROOT = Path("/home/YOLOv11-RGBT")
+REPO_ROOT = YOLO_REPO_ROOT
 EXPECTED_ULTRA_INIT = REPO_ROOT / "ultralytics" / "__init__.py"
 
 if str(REPO_ROOT) not in sys.path:
@@ -46,7 +48,7 @@ from scripts.training.shared.summary import save_run_markdown
 # =========================================================
 
 DATA_YAML = Path("configs/train/from_scratch/anti_uav/ir_cfg.yaml")
-PROJECT_DIR = Path("/home/src/diploma/train/runs")
+PROJECT_DIR = DIPLOMA_ROOT / "train" / "runs"
 RUN_NAME = "yolo11s_ir_from_scratch"
 
 RESUME = False

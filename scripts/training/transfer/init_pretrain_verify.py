@@ -21,7 +21,9 @@ from pathlib import Path
 
 import torch
 
-REPO_ROOT = Path("/home/YOLOv11-RGBT")
+from scripts.paths import YOLO_REPO_ROOT, DIPLOMA_ROOT
+
+REPO_ROOT = YOLO_REPO_ROOT
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
@@ -32,13 +34,13 @@ from scripts.training.transfer.weight_transfer import (
     get_model_from_ckpt,
 )
 
-RGB_PRETRAIN = Path("/home/src/diploma/pretrain/runs/yolo11s_rgb_pretrain/weights/best.pt")
-IR_PRETRAIN = Path("/home/src/diploma/pretrain/runs/yolo11s_gray_ir_pretrain_100ep/weights/best.pt")
+RGB_PRETRAIN = DIPLOMA_ROOT / "pretrain" / "runs" / "yolo11s_rgb_pretrain" / "weights" / "best.pt"
+IR_PRETRAIN = DIPLOMA_ROOT / "pretrain" / "runs" / "yolo11s_gray_ir_pretrain_100ep" / "weights" / "best.pt"
 
-RGBT_INIT = Path(
-    "/home/src/diploma/train/runs/antiuav_resync/"
-    "rgbt_init_from_rgb_ir_pretrain/"
-    "yolo11s_rgbt_midfusion_p3_rgb_ir_backbones_rgb_neck_head_init.pt"
+RGBT_INIT = (
+    DIPLOMA_ROOT / "train" / "runs" / "antiuav_resync"
+    / "rgbt_init_from_rgb_ir_pretrain"
+    / "yolo11s_rgbt_midfusion_p3_rgb_ir_backbones_rgb_neck_head_init.pt"
 )
 
 

@@ -26,8 +26,10 @@ from collections import defaultdict
 import cv2
 from tqdm import tqdm
 
+from scripts.paths import POLYGON_DATA_ROOT
 
-ROOT = Path("/mnt/datasets/Maria_preprocess/mine_dpl")
+
+ROOT = POLYGON_DATA_ROOT
 
 SRC_DATA = ROOT / "data_14may_selected_synced_warped_labeled_full"
 OUT_DATA = ROOT / "data_14may_selected_synced_warped_labeled_full_crop_x287_1248"
