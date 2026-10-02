@@ -22,8 +22,10 @@ from pathlib import Path
 
 import numpy as np
 
+from scripts.paths import YOLO_REPO_ROOT, DIPLOMA_ROOT, POLYGON_DATA_ROOT
+
 # ---------- REPO SETUP ----------
-REPO_ROOT = Path("/home/YOLOv11-RGBT")
+REPO_ROOT = YOLO_REPO_ROOT
 EXPECTED_ULTRA_INIT = REPO_ROOT / "ultralytics" / "__init__.py"
 
 if "/ultralytics" in sys.path:
@@ -46,10 +48,7 @@ from scripts.evaluation.polygon.shared_poly_eval import (
 # CONFIG
 # =========================================================
 
-DATA_ROOT = Path(
-    "/mnt/datasets/Maria_preprocess/mine_dpl/"
-    "data_14may_selected_synced_warped_labeled_full_crop_x287_1248"
-)
+DATA_ROOT = POLYGON_DATA_ROOT / "data_14may_selected_synced_warped_labeled_full_crop_x287_1248"
 
 TEST_INTERVAL = "2026-05-14_16-49-25_02616_03299"
 
@@ -57,7 +56,7 @@ IMGSZ = 1248
 CONF_VALUES = [0.25, 0.15, 0.10]
 EVAL_IOU_THR = 0.5
 
-PROJECT_DIR = Path("/home/src/diploma/train/runs/antiuav_resync")
+PROJECT_DIR = DIPLOMA_ROOT / "train" / "runs" / "antiuav_resync"
 
 # All 5 model variants compared in the polygon validation stage: IR-only, RGB-only, RGBT from scratch, and the two RGBT
 # MCF-transfer variants (RGB neck/head vs IR neck/head, both backbones
