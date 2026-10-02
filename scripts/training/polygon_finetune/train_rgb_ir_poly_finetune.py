@@ -24,8 +24,10 @@ from datetime import datetime
 
 import yaml
 
+from scripts.paths import YOLO_REPO_ROOT, DIPLOMA_ROOT, POLYGON_DATA_ROOT
+
 # ---------- REPO SETUP ----------
-REPO_ROOT = Path("/home/YOLOv11-RGBT")
+REPO_ROOT = YOLO_REPO_ROOT
 EXPECTED_ULTRA_INIT = REPO_ROOT / "ultralytics" / "__init__.py"
 
 if "/ultralytics" in sys.path:
@@ -54,13 +56,10 @@ from scripts.training.polygon_finetune.shared_polyfinetune import (
 # CONFIGURATION
 # =========================================================
 
-NEW_DATA_ROOT = Path(
-    "/mnt/datasets/Maria_preprocess/mine_dpl/"
-    "data_14may_selected_synced_warped_labeled_full_crop_x287_1248"
-)
+NEW_DATA_ROOT = POLYGON_DATA_ROOT / "data_14may_selected_synced_warped_labeled_full_crop_x287_1248"
 
-CONFIG_DIR = Path("/home/src/diploma/train/configs/poly_finetune")
-PROJECT_DIR = Path("/home/src/diploma/train/runs/antiuav_resync")
+CONFIG_DIR = DIPLOMA_ROOT / "train" / "configs" / "poly_finetune"
+PROJECT_DIR = DIPLOMA_ROOT / "train" / "runs" / "antiuav_resync"
 INIT_COPY_DIR = PROJECT_DIR / "poly_finetune_init"
 
 DEVICE = 0
