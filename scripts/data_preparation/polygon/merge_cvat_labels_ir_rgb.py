@@ -23,8 +23,10 @@ import shutil
 from pathlib import Path
 from collections import defaultdict
 
+from scripts.paths import POLYGON_DATA_ROOT
 
-ROOT = Path("/mnt/datasets/Maria_preprocess/mine_dpl")
+
+ROOT = POLYGON_DATA_ROOT
 
 SRC_DATA = ROOT / "data_14may_selected_synced_warped"
 OUT_DATA = ROOT / "data_14may_selected_synced_warped_labeled_full"

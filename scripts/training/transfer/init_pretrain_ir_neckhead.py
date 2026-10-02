@@ -22,7 +22,9 @@ from pathlib import Path
 
 import torch
 
-REPO_ROOT = Path("/home/YOLOv11-RGBT")
+from scripts.paths import YOLO_REPO_ROOT, DIPLOMA_ROOT
+
+REPO_ROOT = YOLO_REPO_ROOT
 
 if "/ultralytics" in sys.path:
     sys.path.remove("/ultralytics")
@@ -44,12 +46,12 @@ from scripts.training.transfer.weight_transfer import (
 # CONFIGURATION
 # =========================================================
 
-RGB_PRETRAIN = Path("/home/src/diploma/pretrain/runs/yolo11s_rgb_pretrain/weights/best.pt")
-IR_PRETRAIN = Path("/home/src/diploma/pretrain/runs/yolo11s_gray_ir_pretrain_100ep/weights/best.pt")
+RGB_PRETRAIN = DIPLOMA_ROOT / "pretrain" / "runs" / "yolo11s_rgb_pretrain" / "weights" / "best.pt"
+IR_PRETRAIN = DIPLOMA_ROOT / "pretrain" / "runs" / "yolo11s_gray_ir_pretrain_100ep" / "weights" / "best.pt"
 
-RGBT_CFG_SRC = Path("/home/YOLOv11-RGBT/ultralytics/cfg/models/11-RGBT/yolo11s-RGBT-midfusion-P3.yaml")
+RGBT_CFG_SRC = REPO_ROOT / "ultralytics" / "cfg" / "models" / "11-RGBT" / "yolo11s-RGBT-midfusion-P3.yaml"
 
-OUT_DIR = Path("/home/src/diploma/train/runs/antiuav_resync/rgbt_init_from_rgb_ir_pretrain")
+OUT_DIR = DIPLOMA_ROOT / "train" / "runs" / "antiuav_resync" / "rgbt_init_from_rgb_ir_pretrain"
 RGBT_CFG_NC3 = OUT_DIR / "yolo11s-RGBT-midfusion-P3-nc3.yaml"
 OUT_PT = OUT_DIR / "yolo11s_rgbt_midfusion_p3_rgb_ir_backbones_ir_neck_head_init.pt"
 

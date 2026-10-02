@@ -20,14 +20,16 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
+from scripts.paths import ANTIUAV_DATA_ROOT, DIPLOMA_ROOT
+
 # =========================================================
 # CONFIG
 # =========================================================
 
-ROOT = Path("/mnt/datasets/IR_DATA/ANTI-UAV/ANTI-UAV_each_frame")
+ROOT = ANTIUAV_DATA_ROOT / "ANTI-UAV_each_frame"
 SPLIT = "test"
 
-OUT_DIR = Path("/home/src/diploma/anti_uav/results/test_lite_alignment/single_scene_plots")
+OUT_DIR = DIPLOMA_ROOT / "anti_uav" / "results" / "test_lite_alignment" / "single_scene_plots"
 
 CLASS_ID = 0
 
