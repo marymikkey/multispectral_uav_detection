@@ -3,6 +3,8 @@
 
 """
 YOLOv11 IR (grayscale) pretrain on unpaired infrared UAV datasets.
+
+Datasets: configs/train/pretrain/ir_cfg.yaml (sources and links in DATA_SOURCES.md).
 """
 
 import os
