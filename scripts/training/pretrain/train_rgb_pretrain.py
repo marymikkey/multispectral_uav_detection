@@ -3,6 +3,8 @@
 
 """
 YOLOv11 RGB pretrain on unpaired visible-spectrum UAV datasets.
+
+Datasets: configs/train/pretrain/rgb_cfg.yaml (sources and links in DATA_SOURCES.md).
 """
 
 import os
