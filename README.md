@@ -1,5 +1,6 @@
 # multispectral_detection
-Multispectral (RGB + IR) UAV detection with YOLOv11 mid-fusion.
+Multimodal (RGB / IR / RGBT mid-fusion) drone detection with YOLOv11: code for data
+preparation, unimodal pretraining, weight transfer, training, and evaluation.
 
 ## Data sources
 
