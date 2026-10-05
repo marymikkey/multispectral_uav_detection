@@ -80,11 +80,14 @@ that the transfer is exact. `train_rgbt_transfer_*_neckhead.py` then trains with
 backbones frozen, updating only the fusion blocks, neck and head. `weight_transfer.py`
 holds the layer-name mappings.
 
-### 5. Testing on Anti-UAV - `configs/test/anti_uav/`
+### 5. Testing on Anti-UAV - `scripts/evaluation/anti_uav/`, `configs/test/anti_uav/`
 
-Data configs for the full test set and the day / night subsets. Metrics: Recall,
-Precision, F1, AP@0.5. (There is currently no evaluation script for this stage in the
-repo; the configs can be used with the standard Ultralytics `val`.)
+- `eval_anti_uav_test.py` - runs Ultralytics `val()` for all five models on the full test
+  set and on the day, night and hard-conditions (`meteo`) subsets (configs in
+  `configs/test/anti_uav/`). Metrics: Recall, Precision, AP@0.5, F1. Results are saved as
+  CSV and a markdown table.
+- `speed_benchmark.py` - single-pair inference speed (RGB, IR, RGBT), FPS from the
+  minimum of 10 timed `predict` calls; CPU by default.
 
 ### 6. Field validation - `scripts/training/polygon_finetune/`, `scripts/evaluation/polygon/`, `scripts/visualization/`
 
@@ -111,7 +114,7 @@ scripts/
   paths.py               all absolute roots in one place (see "Paths")
   data_preparation/      anti_uav/ (sync, align, merge)   polygon/ (field data)
   training/              pretrain/  from_scratch/  transfer/  polygon_finetune/  shared/
-  evaluation/polygon/    custom TP/FP/FN evaluation
+  evaluation/            anti_uav/ (test metrics, speed)   polygon/ (custom TP/FP/FN evaluation)
   visualization/         side-by-side videos, synchronisation plots
 DATA_SOURCES.md          links to every dataset used
 requirements.txt

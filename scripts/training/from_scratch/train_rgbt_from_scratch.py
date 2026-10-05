@@ -52,9 +52,9 @@ DEVICE = 0
 
 DATA_YAML = Path("configs/train/from_scratch/anti_uav/rgbt_cfg.yaml")
 PROJECT_DIR = DIPLOMA_ROOT / "train" / "runs"
-RUN_NAME = "yolo11n_rgbt_midfusion_p3_from_scratch_HONEST"
+RUN_NAME = "yolo11s_rgbt_midfusion_p3_from_scratch"
 
-MODEL_CFG = "ultralytics/cfg/models/11-RGBT/yolo11n-RGBT-midfusion-P3.yaml"
+MODEL_CFG = "ultralytics/cfg/models/11-RGBT/yolo11s-RGBT-midfusion-P3.yaml"
 LAST_CKPT = Path(PROJECT_DIR) / RUN_NAME / "weights" / "last.pt"
 
 # ---------- Training hyperparameters ----------
