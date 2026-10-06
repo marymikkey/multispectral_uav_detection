@@ -31,7 +31,7 @@ ROOT = ANTIUAV_DATA_ROOT / "ANTI-UAV_each_frame"
 OUT_ROOT = ANTIUAV_DATA_ROOT / "ANTI-UAV_synced_lite"
 
 # Which splits to process
-SPLITS = ["val"]  # or ["train"], ["test"], etc.
+SPLITS = ["train", "val", "test"]
 
 CLASS_ID = 0
 

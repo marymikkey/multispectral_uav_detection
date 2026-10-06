@@ -52,6 +52,9 @@ and whose time shift is not constant, so frames cannot be paired by frame number
   format). Pairs whose union is more than 50% larger than the bigger box are dropped as
   badly synchronised.
 
+`anti_uav/group_by_scene.py` then regroups the synchronised test set by scene, the layout
+used by the day / night / hard-conditions test configs.
+
 The same pipeline is applied to the field data in `polygon/`: `merge_cvat_labels_ir_rgb.py`
 merges separately annotated IR and RGB labels (CVAT) into one label per frame,
 `crop_pad_to_1248.py` crops RGB/IR from 1920x1080 and pads to 1248x1248, and
@@ -172,3 +175,44 @@ Scripts are run as modules from the repo root. Each training script checks that 
 imported `ultralytics` really comes from `YOLO_REPO_ROOT`, to avoid silently using a
 system-installed package instead of the fork. Dataset YAML files under `configs/` still
 contain the server paths and need to be edited for your data.
+
+## Run order
+
+All commands are run from the repository root.
+
+```bash
+# 1. data (Anti-UAV)
+python -m scripts.data_preparation.anti_uav.sync_anti_uav_rgbt
+python -m scripts.data_preparation.anti_uav.group_by_scene        # test subsets by scene
+
+# 2. unimodal pretraining
+python -m scripts.training.pretrain.train_rgb_pretrain
+python -m scripts.training.pretrain.train_ir_pretrain
+
+# 3. baselines from scratch
+python -m scripts.training.from_scratch.train_rgb_from_scratch
+python -m scripts.training.from_scratch.train_ir_from_scratch
+python -m scripts.training.from_scratch.train_rgbt_from_scratch
+
+# 4. weight transfer
+python -m scripts.training.transfer.init_pretrain_ir_neckhead
+python -m scripts.training.transfer.init_pretrain_rgb_neckhead
+python -m scripts.training.transfer.init_pretrain_verify
+python -m scripts.training.transfer.train_rgbt_transfer_ir_neckhead
+python -m scripts.training.transfer.train_rgbt_transfer_rgb_neckhead
+
+# 5. testing
+python -m scripts.evaluation.anti_uav.eval_anti_uav_test
+python -m scripts.evaluation.anti_uav.speed_benchmark
+
+# 6. field data
+python -m scripts.data_preparation.polygon.merge_cvat_labels_ir_rgb
+python -m scripts.data_preparation.polygon.crop_pad_to_1248
+python -m scripts.training.polygon_finetune.train_rgb_ir_poly_finetune
+python -m scripts.training.polygon_finetune.train_rgbt_poly_finetune
+python -m scripts.evaluation.polygon.eval_rgbt_poly_models
+python -m scripts.visualization.polygon.render_side_by_side_poly
+```
+
+Training scripts refuse to overwrite an existing run folder (`exist_ok=False`), so to
+rerun a stage point `DIPLOMA_ROOT` at a fresh directory.

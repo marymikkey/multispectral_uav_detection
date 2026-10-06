@@ -62,7 +62,7 @@ MODELS = [
     {
         "name": "rgb_only",
         "modality": "rgb",
-        "weights": PROJECT_DIR / "yolo11s_rgb_from_scratch_2" / "weights" / "best.pt",
+        "weights": PROJECT_DIR / "yolo11s_rgb_from_scratch" / "weights" / "best.pt",
     },
     {
         "name": "ir_only",

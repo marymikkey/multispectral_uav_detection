@@ -48,7 +48,7 @@ from scripts.training.shared.summary import save_run_markdown
 # =========================================================
 
 DATA_YAML = Path("configs/train/from_scratch/anti_uav/rgb_cfg.yaml")
-PROJECT_DIR = DIPLOMA_ROOT / "train" / "runs"
+PROJECT_DIR = DIPLOMA_ROOT / "train" / "runs" / "antiuav_resync"
 RUN_NAME = "yolo11s_rgb_from_scratch"
 
 RESUME = False
@@ -62,7 +62,7 @@ TRAIN_ARGS = dict(
     cache=False,
     imgsz=640,
     epochs=100,
-    batch=32,
+    batch=64,
     workers=8,
     optimizer="AdamW",
     lr0=0.001,
