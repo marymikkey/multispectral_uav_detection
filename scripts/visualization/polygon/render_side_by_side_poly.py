@@ -62,9 +62,9 @@ PROJECT_DIR = DIPLOMA_ROOT / "train" / "runs" / "antiuav_resync"
 MODELS = [
     {
         "model_name": "rgb_only",
-        "base_tag": "yolo11s_rgb_from_scratch_2_poly_finetune",
+        "base_tag": "yolo11s_rgb_from_scratch_poly_finetune",
         "weight_path": PROJECT_DIR
-        / "yolo11s_rgb_from_scratch_2_poly_finetune_crop_x287_1248"
+        / "yolo11s_rgb_from_scratch_poly_finetune_crop_x287_1248"
         / "weights" / "best.pt",
         "use_simotm": "RGB",
         "channels": 3,

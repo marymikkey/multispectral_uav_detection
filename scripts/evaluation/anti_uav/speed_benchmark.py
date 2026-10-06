@@ -55,7 +55,7 @@ IOU = 0.7
 
 MODALITIES = {
     "rgb": {
-        "weights": PROJECT_DIR / "yolo11s_rgb_from_scratch_2" / "weights" / "best.pt",
+        "weights": PROJECT_DIR / "yolo11s_rgb_from_scratch" / "weights" / "best.pt",
         "kwargs": dict(channels=3),
     },
     "ir": {

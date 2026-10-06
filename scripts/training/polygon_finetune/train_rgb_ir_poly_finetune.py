@@ -67,9 +67,9 @@ DEVICE = 0
 EXPERIMENTS = [
     {
         "tag": "rgb_from_scratch",
-        "run_name": "yolo11s_rgb_from_scratch_2_poly_finetune_crop_x287_1248",
-        "source_checkpoint": PROJECT_DIR / "yolo11s_rgb_from_scratch_2" / "weights" / "best.pt",
-        "init_copy_name": "yolo11s_rgb_from_scratch_2_best_copy_crop_x287_1248.pt",
+        "run_name": "yolo11s_rgb_from_scratch_poly_finetune_crop_x287_1248",
+        "source_checkpoint": PROJECT_DIR / "yolo11s_rgb_from_scratch" / "weights" / "best.pt",
+        "init_copy_name": "yolo11s_rgb_from_scratch_best_copy_crop_x287_1248.pt",
         "data_yaml": CONFIG_DIR / "rgb_poly_finetune_crop_x287_1248.yaml",
         "modality": "rgb",
         "freeze": None,
@@ -170,29 +170,6 @@ def make_yaml(exp: dict):
             "ch": 1,
         }
 
-    elif modality == "rgbt":
-        # Not used by the
-        # EXPERIMENTS list above (RGBT fine-tune lives in
-        # train_rgbt_poly_finetune.py).
-        train_paths = [
-            "2026-05-14_16-49-25_01490_01640/visible/images",
-            "2026-05-14_16-49-25_04750_05210/visible/images",
-            "2026-05-14_16-49-25_06618_06952/visible/images",
-            "2026-05-14_17-02-50_01290_01717/visible/images",
-            "2026-05-14_17-25-12_01924_02085/visible/images",
-        ]
-        val_paths = ["2026-05-14_16-49-25_02616_03299/visible/images"]
-        data = {
-            "path": str(NEW_DATA_ROOT),
-            "train": train_paths,
-            "val": val_paths,
-            "test": val_paths,
-            "nc": 1,
-            "names": ["drone"],
-            "pairs_rgb_ir": ["visible", "infrared"],
-            "ch": 4,
-        }
-
     else:
         raise ValueError(f"Unknown modality: {modality}")
 
@@ -209,8 +186,6 @@ def get_modality_train_kwargs(modality: str):
         return {"use_simotm": "RGB", "channels": 3}
     if modality == "ir":
         return {"use_simotm": "Gray", "channels": 1}
-    if modality == "rgbt":
-        return {"use_simotm": "RGBT", "channels": 4, "pairs_rgb_ir": ["visible", "infrared"]}
     raise ValueError(f"Unknown modality: {modality}")
 
 
