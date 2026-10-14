@@ -34,3 +34,11 @@ Data config: `configs/train/pretrain/ir_cfg.yaml`.
 |---|---|---|
 | Thermal Drones Dataset | 360 | https://universe.roboflow.com/korki14/drones-srdze/dataset/1 |
 | Halmstadt UAV Dataset (infrared part) | 85,000 (RGB + IR) | https://zenodo.org/records/5500576 (DOI 10.5281/zenodo.5500575) |
+
+## Cross-domain check
+
+Used in `experiments/flir/`, configs in `configs/flir/`.
+
+| Dataset | Pairs | Source |
+|---|---|---|
+| FLIR ADAS (aligned RGB-T version, 3 classes) | 5,137 | https://www.flir.com/oem/adas/adas-dataset-form/ |

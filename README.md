@@ -23,6 +23,10 @@ Test set: Anti-UAV-RGBT (synchronised pairs), 640x640, one class (drone).
 | RGBT + frozen RGB/IR backbones + RGB neck/head | 0.938 | 0.987 | 0.977 | 0.962 |
 | RGBT + frozen RGB/IR backbones + IR neck/head | 0.952 | 0.980 | 0.984 | 0.966 |
 
+The RGB-only model and the RGB branch use the fork's default input mode (`use_simotm`
+is not set): the visible frame is read as grayscale and expanded to three channels
+(gray, blurred, blurred).
+
 Mid-fusion helps most at night and in hard conditions (blur, glare, low contrast). On
 the field data the from-scratch RGBT model is the best (AP@0.5
 0.947); the frozen-backbone variants drop to 0.860-0.880, most likely because the
@@ -37,7 +41,9 @@ The work is organised as a chain of blocks. Each one maps to a folder under
 
 Anti-UAV-RGBT has RGB (1920x1080) and IR (640x512) videos that are not aligned in space
 and whose time shift is not constant, so frames cannot be paired by frame number.
-`anti_uav/sync_anti_uav_rgbt.py` builds paired training data in three steps:
+`anti_uav/videos_to_frames.py` first converts the raw videos and json annotations into
+per-frame images with YOLO labels (`ANTI-UAV_each_frame`). `anti_uav/sync_anti_uav_rgbt.py`
+then builds paired training data in three steps:
 
 - **Spatial alignment.** IR is warped into the RGB coordinate system with one affine
   transform (scale 2.8515, rotation -0.33 deg, offset 10 / -245 px; tuned by hand on
@@ -109,10 +115,17 @@ transfer with IR neck/head.
 - `visualization/plot_scene_shift.py` - diagnostic plots of the synchronisation
   (frame-difference signals, shift curve, final pairing) for one scene.
 
+### Other domains - `experiments/flir/`
+
+A separate check of the same RGB / IR / RGBT mid-fusion comparison on FLIR ADAS aligned
+(person, car, bicycle), trained with YOLO11n. Details and results:
+[experiments/flir/README.md](experiments/flir/README.md).
+
 ## Repository layout
 
 ```
-configs/                 dataset configs (train / test)
+configs/                 dataset configs (train / test / flir)
+experiments/flir/        cross-domain check on FLIR ADAS
 scripts/
   paths.py               all absolute roots in one place (see "Paths")
   data_preparation/      anti_uav/ (sync, align, merge)   polygon/ (field data)
@@ -182,6 +195,7 @@ All commands are run from the repository root.
 
 ```bash
 # 1. data (Anti-UAV)
+python -m scripts.data_preparation.anti_uav.videos_to_frames
 python -m scripts.data_preparation.anti_uav.sync_anti_uav_rgbt
 python -m scripts.data_preparation.anti_uav.group_by_scene        # test subsets by scene
 

@@ -1,0 +1,11 @@
+path: /mnt/datasets/Maria_preprocess/flir/FLIR3C
+
+train: infrared/train
+val: infrared/test
+test: infrared/test
+
+nc: 3
+names:
+  0: person
+  1: car
+  2: bicycle
