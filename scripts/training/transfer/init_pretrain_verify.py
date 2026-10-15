@@ -2,15 +2,13 @@
 # -*- coding: utf-8 -*-
 
 """
-Sanity-check that init_pretrain_rgb_neckhead.py correctly transferred weights
-from the RGB/IR pretrain checkpoints into the initialized RGBT checkpoint
-(tensor-by-tensor comparison).
+Sanity-check that init_pretrain_rgb_neckhead.py and init_pretrain_ir_neckhead.py
+correctly transferred weights from the RGB/IR pretrain checkpoints into the
+initialized RGBT checkpoints (tensor-by-tensor comparison).
 
-Checks the RGB-neck/head variant (yolo11s_rgbt_midfusion_p3_rgb_ir_backbones_
-rgb_neck_head_init.pt). To verify the IR-neck/head variant instead, point
-RGBT_INIT at that checkpoint (produced by init_pretrain_ir_neckhead.py) --
-note the common-part check below would then need to compare against ir_sd
-using COMMON_MAP instead of rgb_sd.
+For both variants the RGB and IR branches are compared with the matching pretrain
+model; the shared neck/head is compared with the RGB pretrain (RGB-neck/head
+variant) or with the IR pretrain (IR-neck/head variant).
 """
 
 import os
@@ -37,11 +35,13 @@ from scripts.training.transfer.weight_transfer import (
 RGB_PRETRAIN = DIPLOMA_ROOT / "pretrain" / "runs" / "yolo11s_rgb_pretrain" / "weights" / "best.pt"
 IR_PRETRAIN = DIPLOMA_ROOT / "pretrain" / "runs" / "yolo11s_gray_ir_pretrain_100ep" / "weights" / "best.pt"
 
-RGBT_INIT = (
-    DIPLOMA_ROOT / "train" / "runs" / "antiuav_resync"
-    / "rgbt_init_from_rgb_ir_pretrain"
-    / "yolo11s_rgbt_midfusion_p3_rgb_ir_backbones_rgb_neck_head_init.pt"
-)
+INIT_DIR = DIPLOMA_ROOT / "train" / "runs" / "antiuav_resync" / "rgbt_init_from_rgb_ir_pretrain"
+
+# variant name, initialized checkpoint, pretrain the shared neck/head came from
+VARIANTS = [
+    ("RGB NECK/HEAD", INIT_DIR / "yolo11s_rgbt_midfusion_p3_rgb_ir_backbones_rgb_neck_head_init.pt", "rgb"),
+    ("IR NECK/HEAD", INIT_DIR / "yolo11s_rgbt_midfusion_p3_rgb_ir_backbones_ir_neck_head_init.pt", "ir"),
+]
 
 
 def check_mapping(src_sd, dst_sd, prefix_map, name):
@@ -110,33 +110,40 @@ def main():
     print("VERIFY FULL RGBT INIT")
     print("=" * 90)
 
-    for p in [RGB_PRETRAIN, IR_PRETRAIN, RGBT_INIT]:
+    for p in [RGB_PRETRAIN, IR_PRETRAIN] + [ckpt for _, ckpt, _ in VARIANTS]:
         if not p.exists():
             raise FileNotFoundError(p)
 
-    rgb_model = get_model_from_ckpt(RGB_PRETRAIN)
-    ir_model = get_model_from_ckpt(IR_PRETRAIN)
-    rgbt_model = get_model_from_ckpt(RGBT_INIT)
+    pretrain_sd = {
+        "rgb": get_model_from_ckpt(RGB_PRETRAIN).state_dict(),
+        "ir": get_model_from_ckpt(IR_PRETRAIN).state_dict(),
+    }
 
-    rgb_sd = rgb_model.state_dict()
-    ir_sd = ir_model.state_dict()
-    rgbt_sd = rgbt_model.state_dict()
-
-    pass_rgb, n_rgb, ok_rgb = check_mapping(rgb_sd, rgbt_sd, RGB_BRANCH_MAP, "RGB BRANCH")
-    pass_ir, n_ir, ok_ir = check_mapping(ir_sd, rgbt_sd, IR_BRANCH_MAP, "IR BRANCH")
-    pass_common, n_common, ok_common = check_mapping(rgb_sd, rgbt_sd, COMMON_MAP, "RGB COMMON NECK/HEAD")
+    summary = []
+    for name, ckpt, common_src in VARIANTS:
+        rgbt_sd = get_model_from_ckpt(ckpt).state_dict()
+        checks = [
+            ("RGB branch", check_mapping(pretrain_sd["rgb"], rgbt_sd, RGB_BRANCH_MAP, f"{name}: RGB BRANCH")),
+            ("IR branch", check_mapping(pretrain_sd["ir"], rgbt_sd, IR_BRANCH_MAP, f"{name}: IR BRANCH")),
+            (f"{common_src.upper()} common part",
+             check_mapping(pretrain_sd[common_src], rgbt_sd, COMMON_MAP, f"{name}: COMMON NECK/HEAD")),
+        ]
+        summary.append((name, checks))
 
     print("=" * 90)
     print("SUMMARY")
     print("=" * 90)
-    print(f"RGB branch:        {ok_rgb}/{n_rgb} exact tensors")
-    print(f"IR branch:         {ok_ir}/{n_ir} exact tensors")
-    print(f"RGB common part:   {ok_common}/{n_common} exact tensors")
+    all_passed = True
+    for name, checks in summary:
+        print(name)
+        for label, (passed, total, ok) in checks:
+            print(f"  {label + ':':20s} {ok}/{total} exact tensors")
+            all_passed = all_passed and passed
     print()
 
-    if pass_rgb and pass_ir and pass_common:
+    if all_passed:
         print("ALL CHECKS PASSED")
-        print("RGBT checkpoint is correctly initialized.")
+        print("Both RGBT checkpoints are correctly initialized.")
     else:
         print("CHECKS FAILED")
         raise RuntimeError("Some transferred tensors do not match.")

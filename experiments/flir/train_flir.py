@@ -32,23 +32,23 @@ from scripts.training.shared.utils import check_cuda, check_ultralytics_import
 PROJECT_DIR = DIPLOMA_ROOT / "experiments" / "flir"
 DEVICE = 0
 
-# Model configs are given without a size suffix, so the default (n) scale is used.
+# "11n" in the model name selects scale n (the file itself is the shared yolo11*.yaml).
 MODALITIES = {
     "rgb": dict(
         data="configs/flir/rgb_cfg.yaml",
-        model="ultralytics/cfg/models/11/yolo11.yaml",
+        model="ultralytics/cfg/models/11/yolo11n.yaml",
         epochs=200,
         extra={},
     ),
     "ir": dict(
         data="configs/flir/ir_cfg.yaml",
-        model="ultralytics/cfg/models/11/yolo11.yaml",
+        model="ultralytics/cfg/models/11/yolo11n.yaml",
         epochs=300,
         extra={},
     ),
     "rgbt": dict(
         data="configs/flir/rgbt_cfg.yaml",
-        model="ultralytics/cfg/models/11-RGBT/yolo11-RGBT-midfusion-P3.yaml",
+        model="ultralytics/cfg/models/11-RGBT/yolo11n-RGBT-midfusion-P3.yaml",
         epochs=300,
         extra=dict(channels=4, use_simotm="RGBT", pairs_rgb_ir=["visible", "infrared"]),
     ),
