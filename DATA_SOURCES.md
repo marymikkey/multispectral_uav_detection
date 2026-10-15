@@ -41,4 +41,4 @@ Used in `experiments/flir/`, configs in `configs/flir/`.
 
 | Dataset | Pairs | Source |
 |---|---|---|
-| FLIR ADAS (aligned RGB-T version, 3 classes) | 5,137 | https://www.flir.com/oem/adas/adas-dataset-form/ |
+| FLIR ADAS v1.3 (aligned RGB-T version, 3 classes) | 5,137 | https://www.kaggle.com/datasets/deepnewbie/flir-thermal-images-dataset?select=FLIR_ADAS_1_3 |
