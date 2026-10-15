@@ -14,6 +14,7 @@ visible dir with use_simotm="RGBT", channels=4.
 This is inference + custom matching, not ultralytics val() -- single class /
 single GT per frame, so recall at IoU>=0.5 here is used as a mAP50-like
 proxy for comparing inference configs (see map50_like in evaluate_results).
+The field-validation results table comes from val_poly_models.py.
 """
 
 import sys

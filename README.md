@@ -107,9 +107,12 @@ compared: RGB-only, IR-only, RGBT from scratch, RGBT transfer with RGB neck/head
 transfer with IR neck/head.
 
 - `training/polygon_finetune/` - fine-tuning of all five models.
-- `evaluation/polygon/eval_rgbt_poly_models.py` - Recall / Precision / F1 / IoU computed
-  by explicit TP / FP / FN matching (frames contain 0-1 objects, so a standard mAP is a
-  poor fit; recall at IoU 0.5 is used as the AP proxy).
+- `evaluation/polygon/val_poly_models.py` - Ultralytics `val()` of all five models on the
+  held-out field interval (659 pairs, 1248x1248): Recall, Precision, AP@0.5, F1. This
+  gives the field-validation results.
+- `evaluation/polygon/eval_rgbt_poly_models.py` - additional analysis: explicit TP / FP / FN
+  matching at several confidence thresholds, with and without a one-detection-per-frame
+  limit (frames contain 0-1 objects), plus mean IoU.
 - `visualization/polygon/render_side_by_side_poly.py` - side-by-side RGB | IR videos of
   predictions at several confidence thresholds.
 - `visualization/plot_scene_shift.py` - diagnostic plots of the synchronisation
@@ -130,7 +133,7 @@ scripts/
   paths.py               all absolute roots in one place (see "Paths")
   data_preparation/      anti_uav/ (sync, align, merge)   polygon/ (field data)
   training/              pretrain/  from_scratch/  transfer/  polygon_finetune/  shared/
-  evaluation/            anti_uav/ (test metrics, speed)   polygon/ (custom TP/FP/FN evaluation)
+  evaluation/            anti_uav/ (test metrics, speed)   polygon/ (field validation, TP/FP/FN analysis)
   visualization/         side-by-side videos, synchronisation plots
 DATA_SOURCES.md          links to every dataset used
 requirements.txt
@@ -224,9 +227,12 @@ python -m scripts.data_preparation.polygon.merge_cvat_labels_ir_rgb
 python -m scripts.data_preparation.polygon.crop_pad_to_1248
 python -m scripts.training.polygon_finetune.train_rgb_ir_poly_finetune
 python -m scripts.training.polygon_finetune.train_rgbt_poly_finetune
+python -m scripts.evaluation.polygon.val_poly_models
 python -m scripts.evaluation.polygon.eval_rgbt_poly_models
 python -m scripts.visualization.polygon.render_side_by_side_poly
 ```
 
-Training scripts refuse to overwrite an existing run folder (`exist_ok=False`), so to
-rerun a stage point `DIPLOMA_ROOT` at a fresh directory.
+Training scripts never overwrite an existing run folder (`exist_ok=False`): if the folder
+already exists, Ultralytics writes to a new one with a numeric suffix (`name2`), and the
+next stages will not find it under the expected name. To rerun a stage, point
+`DIPLOMA_ROOT` at a fresh directory.
