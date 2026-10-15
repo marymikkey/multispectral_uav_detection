@@ -168,6 +168,19 @@ pip install torch==2.7.0 torchvision==0.22.0 --index-url https://download.pytorc
 (Python 3.11.12, NVIDIA driver 575.64.03 / CUDA 12.9, ffmpeg 4.4.2. `ffmpeg` must be on
 `PATH` for the video rendering script.)
 
+## Weights
+
+All trained checkpoints (2 pretrain models, 5 Anti-UAV models, 5 field fine-tuned models)
+are on Hugging Face: https://huggingface.co/marymikkey/multispectral_uav_detection
+
+The folder layout there matches `DIPLOMA_ROOT`, so after downloading the evaluation
+and transfer scripts run without path changes:
+
+```bash
+pip install huggingface_hub
+hf download marymikkey/multispectral_uav_detection --local-dir $DIPLOMA_ROOT
+```
+
 ## Paths
 
 Every absolute root the scripts need is defined once in `scripts/paths.py`. The defaults
