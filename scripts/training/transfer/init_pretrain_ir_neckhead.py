@@ -49,10 +49,10 @@ from scripts.training.transfer.weight_transfer import (
 RGB_PRETRAIN = DIPLOMA_ROOT / "pretrain" / "runs" / "yolo11s_rgb_pretrain" / "weights" / "best.pt"
 IR_PRETRAIN = DIPLOMA_ROOT / "pretrain" / "runs" / "yolo11s_gray_ir_pretrain_100ep" / "weights" / "best.pt"
 
-RGBT_CFG_SRC = REPO_ROOT / "ultralytics" / "cfg" / "models" / "11-RGBT" / "yolo11s-RGBT-midfusion-P3.yaml"
+RGBT_CFG_SRC = REPO_ROOT / "ultralytics" / "cfg" / "models" / "11-RGBT" / "yolo11-RGBT-midfusion-P3.yaml"
 
 OUT_DIR = DIPLOMA_ROOT / "train" / "runs" / "antiuav_resync" / "rgbt_init_from_rgb_ir_pretrain"
-RGBT_CFG_NC3 = OUT_DIR / "yolo11s-RGBT-midfusion-P3-nc3.yaml"
+RGBT_CFG_NC3 = OUT_DIR / "yolo11s-RGBT-midfusion-P3-nc3.yaml"  # "11s" in the name selects scale s
 OUT_PT = OUT_DIR / "yolo11s_rgbt_midfusion_p3_rgb_ir_backbones_ir_neck_head_init.pt"
 
 
