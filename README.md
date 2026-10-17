@@ -181,6 +181,26 @@ pip install huggingface_hub
 hf download marymikkey/multispectral_uav_detection --local-dir $DIPLOMA_ROOT
 ```
 
+The same files are attached to the GitHub release
+[v1.0](https://github.com/marymikkey/multispectral_uav_detection/releases/tag/v1.0) under
+flat names. To use them, save each one as `weights/best.pt` in the run folder below
+(relative to `DIPLOMA_ROOT`):
+
+| Release file | Run folder |
+|---|---|
+| `rgb_pretrain.pt` | `pretrain/runs/yolo11s_rgb_pretrain` |
+| `ir_pretrain.pt` | `pretrain/runs/yolo11s_gray_ir_pretrain_100ep` |
+| `rgb_from_scratch.pt` | `train/runs/antiuav_resync/yolo11s_rgb_from_scratch` |
+| `ir_from_scratch.pt` | `train/runs/antiuav_resync/yolo11s_ir_from_scratch` |
+| `rgbt_from_scratch.pt` | `train/runs/antiuav_resync/yolo11s_rgbt_midfusion_p3_from_scratch` |
+| `rgbt_transfer_rgb_neckhead.pt` | `train/runs/antiuav_resync/yolo11s_rgbt_midfusion_p3_rgb_ir_pretrained_rgb_neck_head_freeze_backbones` |
+| `rgbt_transfer_ir_neckhead.pt` | `train/runs/antiuav_resync/yolo11s_rgbt_midfusion_p3_rgb_ir_pretrained_ir_neck_head_freeze_backbones` |
+| `poly_rgb_from_scratch.pt` | `train/runs/antiuav_resync/yolo11s_rgb_from_scratch_poly_finetune_crop_x287_1248` |
+| `poly_ir_from_scratch.pt` | `train/runs/antiuav_resync/yolo11s_ir_from_scratch_poly_finetune_crop_x287_1248` |
+| `poly_rgbt_from_scratch.pt` | `train/runs/antiuav_resync/yolo11s_rgbt_midfusion_p3_from_scratch_poly_finetune_crop_x287_1248` |
+| `poly_rgbt_transfer_rgb_neckhead.pt` | `train/runs/antiuav_resync/yolo11s_rgbt_midfusion_p3_rgb_neck_head_freeze_backbones_poly_finetune_crop_x287_1248` |
+| `poly_rgbt_transfer_ir_neckhead.pt` | `train/runs/antiuav_resync/yolo11s_rgbt_midfusion_p3_ir_neck_head_freeze_backbones_poly_finetune_crop_x287_1248` |
+
 ## Paths
 
 Every absolute root the scripts need is defined once in `scripts/paths.py`. The defaults
