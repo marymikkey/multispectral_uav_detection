@@ -14,6 +14,7 @@ system.
 ## Results in brief
 
 Test set: Anti-UAV-RGBT (synchronised pairs), 640x640, one class (drone).
+Ultralytics `val()`, see `scripts/evaluation/anti_uav/eval_anti_uav_test.py`.
 
 | Model | Recall | Precision | AP@0.5 | F1 |
 |---|---|---|---|---|
@@ -23,14 +24,70 @@ Test set: Anti-UAV-RGBT (synchronised pairs), 640x640, one class (drone).
 | RGBT + frozen RGB/IR backbones + RGB neck/head | 0.938 | 0.987 | 0.977 | 0.962 |
 | RGBT + frozen RGB/IR backbones + IR neck/head | 0.952 | 0.980 | 0.984 | 0.966 |
 
-The RGB-only model and the RGB branch use the fork's default input mode (`use_simotm`
-is not set): the visible frame is read as grayscale and expanded to three channels
-(gray, blurred, blurred).
+AP@0.5 by condition (test subsets in `configs/test/anti_uav/`):
+
+| Model | Day | Night | Hard conditions |
+|---|---|---|---|
+| YOLO11s RGB-only | 0.915 | 0.267 | 0.720 |
+| YOLO11s IR-only | 0.903 | 0.948 | 0.870 |
+| YOLO11s-RGBT from scratch | 0.946 | 0.994 | 0.930 |
+| RGBT + frozen RGB/IR backbones + RGB neck/head | 0.975 | 0.993 | 0.947 |
+| RGBT + frozen RGB/IR backbones + IR neck/head | 0.983 | 0.994 | 0.966 |
+
+Field validation: 659 pairs from separate video sequences, 1248x1248, after fine-tuning
+on 1350 pairs. Ultralytics `val()`, see `scripts/evaluation/polygon/val_poly_models.py`.
+
+| Model | Recall | Precision | AP@0.5 | F1 |
+|---|---|---|---|---|
+| YOLO11s RGB-only | 0.581 | 0.635 | 0.601 | 0.607 |
+| YOLO11s IR-only | 0.813 | 0.870 | 0.853 | 0.841 |
+| YOLO11s-RGBT from scratch | 0.893 | 0.939 | 0.947 | 0.916 |
+| RGBT + frozen RGB/IR backbones + RGB neck/head | 0.826 | 0.853 | 0.860 | 0.839 |
+| RGBT + frozen RGB/IR backbones + IR neck/head | 0.810 | 0.919 | 0.880 | 0.861 |
 
 Mid-fusion helps most at night and in hard conditions (blur, glare, low contrast). On
-the field data the from-scratch RGBT model is the best (AP@0.5
-0.947); the frozen-backbone variants drop to 0.860-0.880, most likely because the
-field sensor differs from the pretraining data.
+the field data the from-scratch RGBT model is the best; the frozen-backbone variants drop,
+most likely because the field sensor differs from the pretraining data.
+
+### Input modes and colour retraining
+
+The fork decides how to read an image from its `use_simotm` argument. If the argument is
+not set, the fork's default mode is used: the visible frame is read as grayscale and the
+three input channels are filled with the gray image and two blurred copies. The RGB
+pretraining and the RGB-only Anti-UAV model were trained without setting `use_simotm`, so
+these two models, and the results above for them, use grayscale input. All other models
+read their input as intended: the RGBT models take the visible frame in colour plus the
+thermal frame (`use_simotm="RGBT"`), the IR models take the thermal frame (`"Gray"`), and
+the field RGB-only model was fine-tuned in colour (`"RGB"`).
+
+To see whether colour matters, the two grayscale models were retrained with
+`use_simotm="RGB"` and nothing else changed (same data, hyperparameters and frozen layers),
+and both RGBT transfer variants were re-initialised from the colour RGB pretrain:
+
+| Model | Grayscale (results above) | Colour |
+|---|---|---|
+| RGB pretrain | `yolo11s_rgb_pretrain` / `rgb_pretrain.pt` | `yolo11s_rgb_pretrain_color` / `rgb_pretrain_color.pt` |
+| RGB-only, Anti-UAV | `yolo11s_rgb_from_scratch` / `rgb_from_scratch.pt` | `yolo11s_rgb_from_scratch_color` / `rgb_from_scratch_color.pt` |
+| RGBT transfer, RGB neck/head | `..._rgb_ir_pretrained_rgb_neck_head_freeze_backbones` / `rgbt_transfer_rgb_neckhead.pt` | `..._rgb_color_ir_pretrained_rgb_neck_head_freeze_backbones` / `rgbt_transfer_rgb_neckhead_color.pt` |
+| RGBT transfer, IR neck/head | `..._rgb_ir_pretrained_ir_neck_head_freeze_backbones` / `rgbt_transfer_ir_neckhead.pt` | `..._rgb_color_ir_pretrained_ir_neck_head_freeze_backbones` / `rgbt_transfer_ir_neckhead_color.pt` |
+
+Run folders are under `train/runs/antiuav_resync/` (pretrain: `pretrain/runs/`). Grayscale
+weights are in release v1.0, colour weights in v1.1; both sets are on Hugging Face.
+
+Anti-UAV-RGBT test set, Recall / Precision / AP@0.5 / F1:
+
+| Model | Grayscale | Colour |
+|---|---|---|
+| RGB-only | 0.817 / 0.930 / 0.875 / 0.870 | 0.787 / 0.923 / 0.854 / 0.850 |
+| RGBT transfer, RGB neck/head | 0.938 / 0.987 / 0.977 / 0.962 | 0.951 / 0.988 / 0.981 / 0.969 |
+| RGBT transfer, IR neck/head | 0.952 / 0.980 / 0.984 / 0.966 | 0.947 / 0.987 / 0.982 / 0.966 |
+
+Colour input does not help the RGB-only detector: on the test set it is slightly worse
+than the grayscale one, so the grayscale baseline above is not understated. For weight
+transfer, the colour RGB pretrain improves the RGB neck/head variant on every test subset
+(up to +0.013 AP@0.5 in hard conditions) and leaves the IR neck/head variant unchanged.
+The main conclusion does not change: RGBT with transferred weights is the best model on
+Anti-UAV-RGBT.
 
 ## Pipeline
 
