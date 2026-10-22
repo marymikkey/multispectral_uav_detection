@@ -46,8 +46,9 @@ on 1350 pairs. Ultralytics `val()`, see `scripts/evaluation/polygon/val_poly_mod
 | RGBT + frozen RGB/IR backbones + IR neck/head | 0.810 | 0.919 | 0.880 | 0.861 |
 
 Mid-fusion helps most at night and in hard conditions (blur, glare, low contrast). On
-the field data the from-scratch RGBT model is the best; the frozen-backbone variants drop,
-most likely because the field sensor differs from the pretraining data.
+the field data the from-scratch RGBT model is the best; the frozen-backbone variants drop.
+Part of this drop comes from the grayscale RGB pretraining and the rest most likely from
+the field sensor differing from the pretraining data (see the next section).
 
 ### Input modes and colour retraining
 
@@ -62,7 +63,8 @@ the field RGB-only model was fine-tuned in colour (`"RGB"`).
 
 To see whether colour matters, these two models were retrained with
 `use_simotm="RGB"` and nothing else changed (same data, hyperparameters and frozen layers),
-and both RGBT transfer variants were re-initialised from the colour RGB pretrain:
+and both RGBT transfer variants were re-initialised from the colour RGB pretrain, trained
+on Anti-UAV-RGBT and fine-tuned on the field data in the same way as before:
 
 | Model | `use_simotm` not set (default: grayscale input; results above) | `use_simotm="RGB"` (colour input) |
 |---|---|---|
@@ -70,6 +72,8 @@ and both RGBT transfer variants were re-initialised from the colour RGB pretrain
 | RGB-only, Anti-UAV | `yolo11s_rgb_from_scratch` / `rgb_from_scratch.pt` | `yolo11s_rgb_from_scratch_color` / `rgb_from_scratch_color.pt` |
 | RGBT transfer, RGB neck/head | `..._rgb_ir_pretrained_rgb_neck_head_freeze_backbones` / `rgbt_transfer_rgb_neckhead.pt` | `..._rgb_color_ir_pretrained_rgb_neck_head_freeze_backbones` / `rgbt_transfer_rgb_neckhead_color.pt` |
 | RGBT transfer, IR neck/head | `..._rgb_ir_pretrained_ir_neck_head_freeze_backbones` / `rgbt_transfer_ir_neckhead.pt` | `..._rgb_color_ir_pretrained_ir_neck_head_freeze_backbones` / `rgbt_transfer_ir_neckhead_color.pt` |
+| RGBT transfer, RGB neck/head, field | `..._rgb_neck_head_freeze_backbones_poly_finetune_crop_x287_1248` / `poly_rgbt_transfer_rgb_neckhead.pt` | `..._rgb_color_rgb_neck_head_freeze_backbones_poly_finetune_crop_x287_1248` / `poly_rgbt_transfer_rgb_neckhead_color.pt` |
+| RGBT transfer, IR neck/head, field | `..._ir_neck_head_freeze_backbones_poly_finetune_crop_x287_1248` / `poly_rgbt_transfer_ir_neckhead.pt` | `..._rgb_color_ir_neck_head_freeze_backbones_poly_finetune_crop_x287_1248` / `poly_rgbt_transfer_ir_neckhead_color.pt` |
 
 Run folders are under `train/runs/antiuav_resync/` (pretrain: `pretrain/runs/`). The
 weights trained without `use_simotm` are in release v1.0, the colour ones in v1.1; both
@@ -91,13 +95,24 @@ AP@0.5 by condition, `use_simotm` not set → `use_simotm="RGB"`:
 | RGBT transfer, RGB neck/head | 0.975 → 0.980 | 0.993 → 0.994 | 0.947 → 0.960 |
 | RGBT transfer, IR neck/head | 0.983 → 0.980 | 0.994 → 0.994 | 0.966 → 0.963 |
 
+Field validation (659 pairs), Recall / Precision / AP@0.5 / F1:
+
+| Model | `use_simotm` not set (grayscale) | `use_simotm="RGB"` (colour) |
+|---|---|---|
+| RGBT transfer, RGB neck/head | 0.826 / 0.853 / 0.860 / 0.839 | 0.848 / 0.879 / 0.893 / 0.863 |
+| RGBT transfer, IR neck/head | 0.810 / 0.919 / 0.880 / 0.861 | 0.870 / 0.875 / 0.908 / 0.872 |
+
 Colour input does not help the RGB-only detector: it is worse than the grayscale one on
 the full test set and on every subset, so the grayscale baseline above is not understated.
-For weight transfer, the colour RGB pretrain improves the RGB neck/head variant on every
-test subset (up to +0.013 AP@0.5 in hard conditions) and leaves the IR neck/head variant
-unchanged.
-The main conclusion does not change: RGBT with transferred weights is the best model on
-Anti-UAV-RGBT.
+For weight transfer, the colour RGB pretrain matters more. On Anti-UAV-RGBT it improves
+the RGB neck/head variant on every test subset (up to +0.013 AP@0.5 in hard conditions)
+and leaves the IR neck/head variant unchanged. On the field data it improves both variants
+by about 0.03 AP@0.5 and reduces missed detections, which narrows the gap to the
+from-scratch RGBT model (AP@0.5 0.947) from 0.067-0.087 to 0.039-0.054. With grayscale
+pretraining, the frozen RGB backbone received colour frames it had not been trained on;
+this explains part of the field drop of the transfer variants. The from-scratch RGBT model
+is still the best on the field data, and on Anti-UAV-RGBT RGBT with transferred weights
+remains the best model.
 
 ## Pipeline
 
