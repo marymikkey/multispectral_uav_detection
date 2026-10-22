@@ -1,0 +1,9 @@
+path: /mnt/datasets/Maria_preprocess/llvip/LLVIP_yolo
+
+train: visible/train
+val: visible/test
+test: visible/test
+
+nc: 1
+names:
+  0: person

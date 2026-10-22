@@ -43,3 +43,8 @@ POLYGON_DATA_ROOT = Path(
 ANTIUAV_DATA_ROOT = Path(
     os.environ.get("ANTIUAV_DATA_ROOT", "/mnt/datasets/IR_DATA/ANTI-UAV")
 )
+
+# Base directory for the LLVIP dataset (unpacked LLVIP.zip and the converted copy).
+LLVIP_DATA_ROOT = Path(
+    os.environ.get("LLVIP_DATA_ROOT", "/mnt/datasets/Maria_preprocess/llvip")
+)

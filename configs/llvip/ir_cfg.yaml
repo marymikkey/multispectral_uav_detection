@@ -1,0 +1,9 @@
+path: /mnt/datasets/Maria_preprocess/llvip/LLVIP_yolo
+
+train: infrared/train
+val: infrared/test
+test: infrared/test
+
+nc: 1
+names:
+  0: person
