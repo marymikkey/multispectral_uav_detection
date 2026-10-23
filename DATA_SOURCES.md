@@ -35,10 +35,12 @@ Data config: `configs/train/pretrain/ir_cfg.yaml`.
 | Thermal Drones Dataset | 360 | https://universe.roboflow.com/korki14/drones-srdze/dataset/1 |
 | Halmstadt UAV Dataset (infrared part) | 85,000 (RGB + IR) | https://zenodo.org/records/5500576 (DOI 10.5281/zenodo.5500575) |
 
-## Cross-domain check
+## Other domains
 
-Used in `experiments/flir/`, configs in `configs/flir/`.
+Used in `experiments/llvip/` and `experiments/flir/`, configs in `configs/llvip/` and
+`configs/flir/`.
 
 | Dataset | Pairs | Source |
 |---|---|---|
+| LLVIP (person, aligned visible-thermal, non-commercial licence) | 15,488 | https://bupt-ai-cz.github.io/LLVIP/ (paper: https://arxiv.org/abs/2108.10831) |
 | FLIR ADAS v1.3 (aligned RGB-T version, 3 classes) | 5,137 | https://www.kaggle.com/datasets/deepnewbie/flir-thermal-images-dataset?select=FLIR_ADAS_1_3 |

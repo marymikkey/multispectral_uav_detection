@@ -200,20 +200,26 @@ transfer with IR neck/head.
 - `visualization/plot_scene_shift.py` - diagnostic plots of the synchronisation
   (frame-difference signals, shift curve, final pairing) for one scene.
 
-### Other domains - `experiments/flir/`
+### Other domains - `experiments/llvip/`, `experiments/flir/`
 
-A separate check of the same RGB / IR / RGBT mid-fusion comparison on FLIR ADAS aligned
-(person, car, bicycle), trained with YOLO11n. Details and results:
-[experiments/flir/README.md](experiments/flir/README.md).
+The same RGB / IR / RGBT mid-fusion comparison on other datasets:
+
+- LLVIP (night street scenes, person), YOLO11s with the Anti-UAV settings. Test split:
+  AP@0.5 0.873 (RGB), 0.955 (IR), 0.958 (RGBT); AP@0.5:0.95 0.488 / 0.617 / 0.625.
+  Details: [experiments/llvip/README.md](experiments/llvip/README.md).
+- FLIR ADAS aligned (person, car, bicycle), YOLO11n. Details:
+  [experiments/flir/README.md](experiments/flir/README.md).
+
+On both, RGBT is better than either single-spectrum model.
 
 ## Repository layout
 
 ```
-configs/                 dataset configs (train / test / flir)
-experiments/flir/        cross-domain check on FLIR ADAS
+configs/                 dataset configs (train / test / llvip / flir)
+experiments/             other domains: llvip/ (LLVIP), flir/ (FLIR ADAS)
 scripts/
   paths.py               all absolute roots in one place (see "Paths")
-  data_preparation/      anti_uav/ (sync, align, merge)   polygon/ (field data)
+  data_preparation/      anti_uav/ (sync, align, merge)   polygon/ (field data)   llvip/
   training/              pretrain/  from_scratch/  transfer/  polygon_finetune/  shared/
   evaluation/            anti_uav/ (test metrics, speed)   polygon/ (field validation, TP/FP/FN analysis)
   visualization/         side-by-side videos, synchronisation plots
@@ -282,6 +288,13 @@ flat names. To use them, save each one as `weights/best.pt` in the run folder be
 | `poly_rgbt_from_scratch.pt` | `train/runs/antiuav_resync/yolo11s_rgbt_midfusion_p3_from_scratch_poly_finetune_crop_x287_1248` |
 | `poly_rgbt_transfer_rgb_neckhead.pt` | `train/runs/antiuav_resync/yolo11s_rgbt_midfusion_p3_rgb_neck_head_freeze_backbones_poly_finetune_crop_x287_1248` |
 | `poly_rgbt_transfer_ir_neckhead.pt` | `train/runs/antiuav_resync/yolo11s_rgbt_midfusion_p3_ir_neck_head_freeze_backbones_poly_finetune_crop_x287_1248` |
+
+The colour-retrained models are in release
+[v1.1](https://github.com/marymikkey/multispectral_uav_detection/releases/tag/v1.1) (see
+"Input modes and colour retraining"), the LLVIP models in
+[v1.2](https://github.com/marymikkey/multispectral_uav_detection/releases/tag/v1.2)
+(`llvip_{rgb,ir,rgbt}.pt`, run folders `train/runs/llvip/yolo11s_{rgb,ir,rgbt}_llvip`).
+Both are on Hugging Face as well, in the same layout.
 
 ## Paths
 
