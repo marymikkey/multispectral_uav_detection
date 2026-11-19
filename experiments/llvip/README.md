@@ -52,6 +52,14 @@ python -m experiments.llvip.train_llvip rgbt
 python -m experiments.llvip.val_llvip            # official test set, all runs, mean ± std
 ```
 
+If training stops (for example, the container loses the GPU), rerun the same command
+with `--resume`: finished runs are skipped and an interrupted run continues from its
+`weights/last.pt`.
+
+```bash
+for m in rgb ir rgbt; do python -m experiments.llvip.train_llvip $m --resume || break; done
+```
+
 Runs are written to `$DIPLOMA_ROOT/train/runs/llvip_split/yolo11s_<modality>_llvip_seed<N>/`,
 test results to `$DIPLOMA_ROOT/train/tests/llvip_split_test/` (`results.md`, `per_run.csv`).
 
