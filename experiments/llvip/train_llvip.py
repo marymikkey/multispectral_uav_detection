@@ -2,54 +2,82 @@
 # -*- coding: utf-8 -*-
 
 """
-Train the RGB-only, IR-only or RGBT mid-fusion model on LLVIP with the same model and
-hyperparameters as the Anti-UAV from-scratch stage (taken from
-scripts/training/from_scratch/train_*_from_scratch.py). The RGB model reads the
-visible frame in colour.
+Train the RGB-only, IR-only or RGBT mid-fusion P3 model on LLVIP from scratch.
 
-    python -m experiments.llvip.train_llvip rgb|ir|rgbt
+Training uses train_split, model selection (best.pt) uses val_split; the official test
+set is not touched here (see val_llvip.py). All modalities share the settings in
+common.py. Each seed is a separate run:
+
+    python -m experiments.llvip.train_llvip rgbt                 # seeds 0 1 2
+    python -m experiments.llvip.train_llvip rgbt --seeds 0
+    python -m experiments.llvip.train_llvip rgb --batch 64       # override a setting
+
+Runs: $DIPLOMA_ROOT/train/runs/llvip_split/yolo11s_<modality>_llvip_seed<N>/
+Each run folder keeps Ultralytics' args.yaml and results.csv plus run_meta.json
+(repo and fork commits, data config, split lists, duration).
 """
 
 import argparse
-from importlib import import_module
+import time
+from datetime import datetime
 from pathlib import Path
 
-from scripts.paths import DIPLOMA_ROOT
-
-PROJECT_DIR = DIPLOMA_ROOT / "train" / "runs" / "llvip"
-
-MODALITIES = {
-    "rgb": ("train_rgb_from_scratch", "configs/llvip/rgb_cfg.yaml",
-            dict(use_simotm="RGB", channels=3)),
-    "ir": ("train_ir_from_scratch", "configs/llvip/ir_cfg.yaml",
-           dict(use_simotm="Gray", channels=1)),
-    "rgbt": ("train_rgbt_from_scratch", "configs/llvip/rgbt_cfg.yaml",
-             dict(use_simotm="RGBT", channels=4, pairs_rgb_ir=["visible", "infrared"])),
-}
+from experiments.llvip.common import (
+    DEFAULT_SEEDS,
+    MODALITIES,
+    PROJECT_DIR,
+    TRAIN_ARGS,
+    run_name,
+    save_run_meta,
+    setup_fork,
+    write_data_yaml,
+)
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("modality", choices=MODALITIES)
-    modality = parser.parse_args().modality
-    script, data, kwargs = MODALITIES[modality]
+    parser.add_argument("--seeds", type=int, nargs="+", default=DEFAULT_SEEDS)
+    parser.add_argument("--batch", type=int, default=TRAIN_ARGS["batch"])
+    parser.add_argument("--epochs", type=int, default=TRAIN_ARGS["epochs"])
+    parser.add_argument("--device", default="0")
+    args = parser.parse_args()
 
-    # Importing the Anti-UAV script sets up the fork import and gives its settings.
-    ref = import_module(f"scripts.training.from_scratch.{script}")
-    import ultralytics
+    setup_fork()
     from ultralytics import YOLO
-    from scripts.training.shared.utils import check_cuda, check_ultralytics_import
+    from scripts.training.shared.utils import check_cuda
 
-    check_cuda(ref.DEVICE)
-    check_ultralytics_import(Path(ultralytics.__file__), ref.EXPECTED_ULTRA_INIT)
-    if not Path(data).exists():
-        raise FileNotFoundError(data)
+    check_cuda(int(str(args.device).split(",")[0]))
 
-    args = dict(ref.TRAIN_ARGS)
-    args.update(project=str(PROJECT_DIR), name=f"yolo11s_{modality}_llvip")
-    print(f"[RUN] {PROJECT_DIR / args['name']}  model={ref.MODEL_CFG}  data={data}")
+    spec = MODALITIES[args.modality]
+    data_yaml = write_data_yaml(args.modality)
 
-    YOLO(ref.MODEL_CFG).train(data=data, single_cls=True, device=ref.DEVICE, **kwargs, **args)
+    for seed in args.seeds:
+        name = run_name(args.modality, seed)
+        if (PROJECT_DIR / name).exists():
+            raise RuntimeError(f"{PROJECT_DIR / name} already exists; remove it or use another DIPLOMA_ROOT")
+
+        train_args = dict(TRAIN_ARGS, batch=args.batch, epochs=args.epochs)
+        print(f"[RUN] {PROJECT_DIR / name}  model={spec['model_cfg']}  data={data_yaml}  seed={seed}")
+
+        start = time.time()
+        start_dt = datetime.now()
+        model = YOLO(spec["model_cfg"])
+        model.train(data=str(data_yaml), seed=seed, device=args.device,
+                    project=str(PROJECT_DIR), name=name, **spec["load"], **train_args)
+
+        save_dir = Path(model.trainer.save_dir)
+        save_run_meta(save_dir, {
+            "modality": args.modality,
+            "seed": seed,
+            "model_cfg": spec["model_cfg"],
+            "data_yaml": str(data_yaml),
+            "load_args": spec["load"],
+            "train_args": train_args,
+            "start_time": start_dt.isoformat(timespec="seconds"),
+            "duration_sec": round(time.time() - start, 1),
+        })
+        print(f"[DONE] {save_dir}")
 
 
 if __name__ == "__main__":

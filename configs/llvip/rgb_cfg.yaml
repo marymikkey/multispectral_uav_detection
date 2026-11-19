@@ -1,7 +1,8 @@
-path: /mnt/datasets/Maria_preprocess/llvip/LLVIP_yolo
+# path is set at run time from LLVIP_DATA_ROOT (experiments/llvip/common.py)
+path: LLVIP_yolo
 
-train: visible/train
-val: visible/test
+train: visible/train_split
+val: visible/val_split
 test: visible/test
 
 nc: 1

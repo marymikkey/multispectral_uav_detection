@@ -2,48 +2,59 @@
 
 The RGB-only, IR-only and RGBT mid-fusion P3 models trained on
 [LLVIP](https://bupt-ai-cz.github.io/LLVIP/) (Jia et al., ICCV 2021): 15,488 aligned
-visible-thermal pairs, 1280x1024, mostly night street scenes, one class (person).
-Model and hyperparameters are the same as in the Anti-UAV from-scratch stage (YOLO11s,
-imgsz 640, 100 epochs with early stopping after 30, AdamW, lr 1e-3, batch 32 for RGB and
-IR, 64 for RGBT). The RGB model reads the visible frame in colour (`use_simotm="RGB"`).
+visible-thermal pairs, 1280x1024, mostly night street scenes, one class (person). The
+pairs are already aligned, so the alignment and synchronisation steps used for
+Anti-UAV-RGBT are not needed.
 
-Test split, 3,463 pairs, 8,302 people:
+## Protocol
 
-| Model | Recall | Precision | AP@0.5 | AP@0.5:0.95 | F1 |
-|---|---|---|---|---|---|
-| RGB-only | 0.797 | 0.888 | 0.873 | 0.488 | 0.840 |
-| IR-only | 0.890 | 0.941 | 0.955 | 0.617 | 0.914 |
-| RGBT mid-fusion P3 | 0.896 | 0.951 | 0.958 | 0.625 | 0.923 |
-
-The ranking is the same as on Anti-UAV-RGBT: RGBT is better than both single-spectrum
-models on every metric. In these night scenes the thermal frame carries most of the
-information, so the gain of RGBT over IR-only is small, and the RGB-only model falls well
-behind. LLVIP has no separate validation split; as in other work on this dataset, the
-test split is also used for validation.
+- **Split.** LLVIP has an official train set (12,025 pairs, scenes 01-18 and 25) and test
+  set (3,463 pairs, scenes 19-24 and 26), but no validation set. Whole scenes are moved
+  from the official train set into a validation set (seed 0, at least 12% of the train
+  frames). Validation is used for early stopping and for choosing `best.pt`; the official
+  test set is used only for the final evaluation. The frame lists are committed in
+  [`splits/`](splits/), so every run uses the same split; scene and box counts are in
+  [`splits/split_summary.md`](splits/split_summary.md).
+- **Training.** YOLO11s from scratch, imgsz 640, 100 epochs with early stopping after
+  30, AdamW, lr 1e-3 with cosine decay. The same settings for all three modalities
+  ([`common.py`](common.py)): batch 32, same augmentation. The RGB model reads the
+  visible frame in colour (`use_simotm="RGB"`), the IR model the thermal frame
+  (`"Gray"`), the RGBT model both (`"RGBT"`).
+- **Seeds.** Each model is trained with seeds 0, 1 and 2; results are reported as mean ±
+  standard deviation over seeds.
+- **Logged with each run:** Ultralytics `args.yaml` and `results.csv`, and `run_meta.json`
+  with the repository and fork commits, data config, split lists and training time.
 
 ## Data
 
 Download LLVIP from the official page (access form) and unpack it into
 `$LLVIP_DATA_ROOT` (default `/mnt/datasets/Maria_preprocess/llvip`), which gives
-`LLVIP/{visible,infrared}/{train,test}/*.jpg` and `LLVIP/Annotations/*.xml`. Then convert
-it into the layout read by the fork:
+`LLVIP/{visible,infrared}/{train,test}/*.jpg` and `LLVIP/Annotations/*.xml`. Then:
 
 ```bash
-python -m scripts.data_preparation.llvip.prepare_llvip
+python -m scripts.data_preparation.llvip.prepare_llvip     # VOC -> YOLO, LLVIP_yolo/{visible,infrared}/{train,test}/
+python -m scripts.data_preparation.llvip.make_llvip_split  # LLVIP_yolo/{visible,infrared}/{train_split,val_split}/
 ```
 
-This writes `LLVIP_yolo/{visible,infrared}/{train,test}/` with the images as symlinks and
-YOLO labels next to them; the same labels are used for both modalities, since the pairs
-are aligned.
+`prepare_llvip` writes the images as symlinks with YOLO labels next to them; the same
+labels are used for both modalities, since the pairs are aligned. `make_llvip_split`
+reads the committed lists in `splits/` and builds the train and validation folders from
+them (`--regenerate` chooses the validation scenes again).
 
 ## Run
 
 From the repository root:
 
 ```bash
-python -m experiments.llvip.train_llvip rgbt     # rgb | ir | rgbt
-python -m experiments.llvip.val_llvip            # evaluates all trained models
+python -m experiments.llvip.train_llvip rgb      # seeds 0 1 2; --seeds 0 for one run
+python -m experiments.llvip.train_llvip ir
+python -m experiments.llvip.train_llvip rgbt
+python -m experiments.llvip.val_llvip            # official test set, all runs, mean ± std
 ```
 
-Runs are written to `$DIPLOMA_ROOT/train/runs/llvip/yolo11s_<modality>_llvip/`, results to
-`$DIPLOMA_ROOT/train/tests/llvip_test/results.md`.
+Runs are written to `$DIPLOMA_ROOT/train/runs/llvip_split/yolo11s_<modality>_llvip_seed<N>/`,
+test results to `$DIPLOMA_ROOT/train/tests/llvip_split_test/` (`results.md`, `per_run.csv`).
+
+## Results
+
+Pending.

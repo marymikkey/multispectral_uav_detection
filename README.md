@@ -204,8 +204,9 @@ transfer with IR neck/head.
 
 The same RGB / IR / RGBT mid-fusion comparison on other datasets:
 
-- LLVIP (night street scenes, person), YOLO11s with the Anti-UAV settings. Test split:
-  AP@0.5 0.873 (RGB), 0.955 (IR), 0.958 (RGBT); AP@0.5:0.95 0.488 / 0.617 / 0.625.
+- LLVIP (night street scenes, person), YOLO11s trained from scratch: scene-level
+  validation split held out from the official train set, the same settings for all
+  modalities, three seeds.
   Details: [experiments/llvip/README.md](experiments/llvip/README.md).
 - FLIR ADAS aligned (person, car, bicycle), YOLO11n. Details:
   [experiments/flir/README.md](experiments/flir/README.md).
