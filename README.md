@@ -206,7 +206,8 @@ The same RGB / IR / RGBT mid-fusion comparison on other datasets:
 
 - LLVIP (night street scenes, person), YOLO11s trained from scratch: scene-level
   validation split held out from the official train set, the same settings for all
-  modalities, three seeds.
+  modalities, three seeds. Official test set, mean ± std: AP@0.5 0.845 ± 0.014 (RGB),
+  0.930 ± 0.010 (IR), 0.954 ± 0.002 (RGBT); AP@0.5:0.95 0.463 / 0.581 / 0.618.
   Details: [experiments/llvip/README.md](experiments/llvip/README.md).
 - FLIR ADAS aligned (person, car, bicycle), YOLO11n. Details:
   [experiments/flir/README.md](experiments/flir/README.md).
