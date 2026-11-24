@@ -295,7 +295,8 @@ The colour-retrained models are in release
 [v1.1](https://github.com/marymikkey/multispectral_uav_detection/releases/tag/v1.1) (see
 "Input modes and colour retraining"), the LLVIP models in
 [v1.2](https://github.com/marymikkey/multispectral_uav_detection/releases/tag/v1.2)
-(`llvip_{rgb,ir,rgbt}.pt`, run folders `train/runs/llvip/yolo11s_{rgb,ir,rgbt}_llvip`).
+(`llvip_{rgb,ir,rgbt}_seed{0,1,2}.pt`, run folders
+`train/runs/llvip_split/yolo11s_{rgb,ir,rgbt}_llvip_seed{0,1,2}`).
 Both are on Hugging Face as well, in the same layout.
 
 ## Paths
