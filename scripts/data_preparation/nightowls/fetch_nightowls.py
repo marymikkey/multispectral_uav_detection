@@ -6,13 +6,16 @@ The official archives are large (training 135 GB, validation 50 GB). A zip file 
 directory of its members at the end, so with HTTP range requests we read only that
 directory and then only the selected frames.
 
-Selection: frames with at least one pedestrian box; within each recording, every
---step-th of them (the frames are video, neighbours are nearly identical).
-Labels are written in YOLO format with one class, 0 = person.
+Selection: frames with at least one box of --select-classes; within each recording,
+every --step-th of them (the frames are video, neighbours are nearly identical).
+Labels are written in YOLO format with one class, 0 = person, from the boxes of
+--label-classes. By default riders count as person, as in LLVIP. Boxes marked ignore
+are skipped; the number of selected frames that contain them is printed.
 
     python fetch_nightowls.py --split training   --step 10 --out /mnt/datasets/Maria_preprocess/nightowls
     python fetch_nightowls.py --split validation --step 10 --out /mnt/datasets/Maria_preprocess/nightowls
     python fetch_nightowls.py --split training --step 10 --out ... --dry-run   # counts only
+    python fetch_nightowls.py --split training --step 10 --out ... --labels-only   # rewrite labels
 
 Expects nightowls_<split>.json in --out (download it first, ~32 MB / 10 MB).
 Interrupted runs can be restarted: existing images are skipped.
@@ -81,12 +84,18 @@ class HttpRangeFile(io.RawIOBase):
         return n
 
 
-def select_images(ann, step):
+def select_images(ann, step, select_classes, label_classes):
     cats = {c["id"]: c["name"] for c in ann["categories"]}
-    ped_ids = {i for i, n in cats.items() if n == "pedestrian"}
-    boxes = defaultdict(list)
+    sel_ids = {i for i, n in cats.items() if n in select_classes}
+    lbl_ids = {i for i, n in cats.items() if n in label_classes}
+    sel_frames, boxes, ignored = set(), defaultdict(list), set()
     for a in ann["annotations"]:
-        if a["category_id"] in ped_ids and not a.get("ignore", False):
+        if a.get("ignore", False) or cats.get(a["category_id"]) == "ignore":
+            ignored.add(a["image_id"])
+            continue
+        if a["category_id"] in sel_ids:
+            sel_frames.add(a["image_id"])
+        if a["category_id"] in lbl_ids:
             boxes[a["image_id"]].append(a["bbox"])
 
     # Group frames by recording when the field exists, keep temporal order.
@@ -96,13 +105,13 @@ def select_images(ann, step):
                       if ann["images"] and k in ann["images"][0]), "id")
     groups = defaultdict(list)
     for img in ann["images"]:
-        if img["id"] in boxes:
+        if img["id"] in sel_frames:
             groups[img.get(rec_key) if rec_key else 0].append(img)
     selected = []
     for g in groups.values():
         g.sort(key=lambda im: im[order_key])
         selected.extend(g[::step])
-    return cats, boxes, selected, rec_key
+    return cats, boxes, selected, rec_key, ignored
 
 
 def yolo_lines(bboxes, w, h):
@@ -122,16 +131,37 @@ def main():
     p.add_argument("--step", type=int, default=10)
     p.add_argument("--out", required=True)
     p.add_argument("--url", default=None, help="archive URL (default: official)")
+    p.add_argument("--select-classes", default="pedestrian",
+                   help="comma-separated categories a frame must contain to be selected")
+    p.add_argument("--label-classes", default="pedestrian,bicycledriver,motorbikedriver",
+                   help="comma-separated categories written as person")
     p.add_argument("--dry-run", action="store_true")
+    p.add_argument("--labels-only", action="store_true",
+                   help="rewrite label files for the selected frames, do not download")
     args = p.parse_args()
 
     ann = json.load(open(os.path.join(args.out, f"nightowls_{args.split}.json")))
-    cats, boxes, selected, rec_key = select_images(ann, args.step)
+    cats, boxes, selected, rec_key, ignored = select_images(
+        ann, args.step, set(args.select_classes.split(",")), set(args.label_classes.split(",")))
     n_boxes = sum(len(boxes[im["id"]]) for im in selected)
+    n_ign = sum(im["id"] in ignored for im in selected)
     print(f"[{args.split}] categories: {cats}")
-    print(f"[{args.split}] images: {len(ann['images'])}, with pedestrians: {len(boxes)}, "
-          f"grouped by: {rec_key or 'none'}, selected (step {args.step}): {len(selected)}, boxes: {n_boxes}")
+    print(f"[{args.split}] images: {len(ann['images'])}, grouped by: {rec_key or 'none'}, "
+          f"selected (step {args.step}): {len(selected)}, person boxes: {n_boxes}, "
+          f"selected frames with ignore boxes: {n_ign}")
     if args.dry_run:
+        return
+
+    img_dir = os.path.join(args.out, "images", args.split)
+    lbl_dir = os.path.join(args.out, "labels", args.split)
+    os.makedirs(lbl_dir, exist_ok=True)
+    if args.labels_only:
+        for im in selected:
+            name = os.path.splitext(os.path.basename(im["file_name"]))[0]
+            lines = yolo_lines(boxes[im["id"]], im["width"], im["height"])
+            with open(os.path.join(lbl_dir, name + ".txt"), "w") as f:
+                f.write("\n".join(lines) + ("\n" if lines else ""))
+        print(f"[{args.split}] labels written: {len(selected)}")
         return
 
     url = args.url or f"{BASE_URL}/nightowls_{args.split}.zip"
@@ -141,10 +171,7 @@ def main():
     members = {os.path.basename(i.filename): i for i in zf.infolist() if not i.is_dir()}
     print(f"[{args.split}] {len(members)} files in archive ({remote.requests} requests so far)")
 
-    img_dir = os.path.join(args.out, "images", args.split)
-    lbl_dir = os.path.join(args.out, "labels", args.split)
     os.makedirs(img_dir, exist_ok=True)
-    os.makedirs(lbl_dir, exist_ok=True)
 
     done = missing = 0
     t0 = time.time()
