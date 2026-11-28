@@ -5,9 +5,9 @@ unimodal pretraining, weight transfer into a mid-fusion architecture, training, 
 and validation on real-world field data.
 
 The detector is a modification of [YOLOv11-RGBT](https://github.com/wandahangFY/YOLOv11-RGBT):
-two parallel backbones (RGB, 3 channels; IR, 1 channel) with mid-fusion at level P3 (a
-Zero Conv2d block, so the pretrained single-spectrum weights are not disturbed at the start
-of training), followed by a shared neck and three detection heads. Input: two video
+two parallel backbones (RGB, 3 channels; IR, 1 channel) with mid-fusion at level P3
+(features are concatenated and compressed by a 1x1 convolution), followed by a shared
+neck and three detection heads. Input: two video
 streams (visible + IR). Output: bounding boxes of drones in the visible-image coordinate
 system.
 
