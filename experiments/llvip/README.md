@@ -6,6 +6,10 @@ visible-thermal pairs, 1280x1024, mostly night street scenes, one class (person)
 pairs are already aligned, so the alignment and synchronisation steps used for
 Anti-UAV-RGBT are not needed.
 
+![LLVIP training frames](assets/llvip_train_samples.jpg)
+
+*Random training frames (visible) with ground-truth boxes.*
+
 ## Protocol
 
 - **Split.** LLVIP has an official train set (12,025 pairs, scenes 01-18 and 25) and test
